@@ -68,11 +68,6 @@ sleep 2
     GRANT ALL PRIVILEGES ON *.* TO 'codeuser'@'localhost';
     FLUSH PRIVILEGES; "
 
-echo -e "\n${LYELLOW}====Agregando Información la base de datos====${NC}"
-
-sleep 2
-
-
 echo -e "\n${LYELLOW}==== Instalando PHP ====${NC}"
 
 sleep 2
@@ -129,20 +124,27 @@ sleep 2
 
 systemctl reload apache2
 
+echo -e "\n${LYELLOW}==== Poblando la base de datos ====${NC}"
+
+mysql < /var/www/html/app-295devops-travel/database/devopstravel.sql
+sudo sed -i 's/""/"codepass";/g' /var/www/html/app-295devops-travel/config.php
+
+systemctl reload apache2
+
 echo -e "\n${LYELLOW}====  Enviado notificación a Discord ====${NC}"
 
 
 # Configura el token de acceso de tu bot de Discord
-DISCORD="https://discord.com/api/webhooks/1169002249939329156/7MOorDwzym-yBUs3gp0k5q7HyA42M5eYjfjpZgEwmAx1vVVcLgnlSh4TmtqZqCtbupov"
+DISCORD="https://discord.com/api/webhooks/1154865920741752872/au1jkQ7v9LgQJ131qFnFqP-WWehD40poZJXRGEYUDErXHLQJ_BBszUFtVj8g3pu9bm7h"
 
 # Verifica si se proporcionó el argumento del directorio del repositorio
-if [ $# -ne 1 ]; then
-  echo "Uso: $0 <ruta_al_repositorio>"
-  exit 1
-fi
+#if [ $# -ne 1 ]; then
+  #echo "Uso: $0 <"
+  #exit 1
+#fi
 
 # Cambia al directorio del repositorio
-cd "$1"
+#cd "$1"
 
 # Obtiene el nombre del repositorio
 REPO_NAME=$(basename $(git rev-parse --show-toplevel))
@@ -158,7 +160,7 @@ if [[ "$HTTP_STATUS" == *"200 OK"* ]]; then
     DEPLOYMENT_INFO2="Despliegue del repositorio $REPO_NAME: "
     DEPLOYMENT_INFO="La página web $WEB_URL está en línea."
     COMMIT="Commit: $(git rev-parse --short HEAD)"
-    AUTHOR="Autor: $(git log -1 --pretty=format:'%an')"
+    AUTHOR="Autor: Nicolás Stecher"
     DESCRIPTION="Descripción: $(git log -1 --pretty=format:'%s')"
 else
   DEPLOYMENT_INFO="La página web $WEB_URL no está en línea."
